@@ -1,2 +1,2 @@
 mod introsort;
-pub use introsort::introsort;
+pub use introsort::{introsort, introsort_by};

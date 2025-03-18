@@ -1,16 +1,15 @@
-#[cfg(test)]
-mod tests {
-    use crate::selection_sort;
+use std::cmp::Ordering;
 
-    #[test]
-    fn sort() {
-        let mut data = vec![5, 4, 3, 2, 1];
-        selection_sort(&mut data);
-        assert_eq!(data, [1, 2, 3, 4, 5]);
-    }
-}
-
-pub fn selection_sort<T: PartialOrd>(v: &mut [T]) {
+/// # SelectionSort
+///
+/// |              | Time complexity     | Space Complexity | Stabilty | In-place |
+/// |--------------|:-------------------:|:----------------:|:--------:|:--------:|
+/// | **Overall**  | *Quadratic time*    | *Constant space* | Stable   | Yes      |
+/// | Worst case   | `O(n^2)`            | `O(1)`           |
+/// | Best case    | `O(n)`              | `O(1)`           |
+/// | Average      | `O(n^2)`            | `O(1)`           |
+///
+pub fn selection_sort<T: Ord>(v: &mut [T]) {
     let l = v.len();
     for i in 0..(l - 1) {
         let mut idx = i;
@@ -23,4 +22,21 @@ pub fn selection_sort<T: PartialOrd>(v: &mut [T]) {
             v.swap(i, idx);
         }
     }
+}
+
+#[allow(unused_variables)]
+pub fn selection_sort_by<T, F>(v: &mut [T], compare: F)
+where
+    F: Fn(&T, &T) -> Ordering,
+{
+    unimplemented!("Missing implementation for `selection_sort_by()`")
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{in_place_test, selection_sort};
+    //use crate::selection_sort_by;
+
+    in_place_test!(selection_sort);
+    //in_place_test!(selection_sort_by, |a, b| a.cmp(b));
 }

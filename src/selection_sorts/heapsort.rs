@@ -1,26 +1,7 @@
-#[cfg(test)]
-mod tests {
-    use crate::heapsort;
-
-    #[test]
-    fn sort_1() {
-        let mut data = vec![5, 4, 3, 2, 1];
-        heapsort(&mut data);
-        assert_eq!(data, [1, 2, 3, 4, 5]);
-    }
-
-    #[test]
-    fn sort_2() {
-        let mut data = vec![8, 7, 6, 5, 4, 6, 6, 3, 2, 1, 0];
-        let expected = vec![0, 1, 2, 3, 4, 5, 6, 6, 6, 7, 8];
-
-        heapsort(&mut data);
-        assert_eq!(data, expected);
-    }
-}
+use std::cmp::Ordering;
 
 #[inline]
-pub fn heapify<T: PartialOrd>(v: &mut [T], n: usize, mut i: usize) {
+fn heapify<T: Ord>(v: &mut [T], n: usize, mut i: usize) {
     let mut parent_idx = i;
     loop {
         let left_child_idx = 2 * i + 1;
@@ -41,13 +22,22 @@ pub fn heapify<T: PartialOrd>(v: &mut [T], n: usize, mut i: usize) {
 }
 
 #[inline]
-pub fn build_heap<T: PartialOrd>(v: &mut [T], n: usize) {
+fn build_heap<T: Ord>(v: &mut [T], n: usize) {
     for i in (0..n / 2).rev() {
         heapify(v, n, i);
     }
 }
 
-pub fn heapsort<T: PartialOrd>(v: &mut [T]) {
+/// # SelectionSort
+///
+/// |              | Time complexity     | Space Complexity | Stabilty | In-place |
+/// |--------------|:-------------------:|:----------------:|:--------:|:--------:|
+/// | **Overall**  | *Quasi-linear time* | *Linear space*   | Stable   | Yes      |
+/// | Worst case   | `O(n^2)`            | `O(1)`           |
+/// | Best case    | `O(n)`              | `O(1)`           |
+/// | Average      | `O(n^2)`            | `O(1)`           |
+///
+pub fn heapsort<T: Ord>(v: &mut [T]) {
     let l = v.len();
 
     build_heap(v, l);
@@ -56,4 +46,21 @@ pub fn heapsort<T: PartialOrd>(v: &mut [T]) {
         v.swap(0, l - i);
         heapify(&mut v[0..l - i], l - i, 0);
     }
+}
+
+#[allow(unused_variables)]
+pub fn heapsort_by<T, F>(v: &mut [T], f: F)
+where
+    F: Fn(&T, &T) -> Ordering,
+{
+    unimplemented!("Missing implementation for `heapsortsort_by()`")
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{heapsort, in_place_test};
+    //use crate::heapsort_by;
+
+    in_place_test!(heapsort);
+    //in_place_test!(heapsort_by, |a, b| a.cmp(b));
 }
